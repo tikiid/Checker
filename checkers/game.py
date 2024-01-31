@@ -1,7 +1,7 @@
 import pygame
-from .constants import BLACK, WHITE, BLUE, SQUARE_SIZE
-from checkers.board import Board
-from checkers.indicator import TurnIndicator
+from .constants import BLACK, WHITE, SQUARE_SIZE, HEIGHT, WIDTH
+from .board import Board
+from .indicator import TurnIndicator
 
 
 class Game:
@@ -13,6 +13,7 @@ class Game:
     def update(self):
         self.board.draw(self.win)
         self.draw_valid_moves(self.valid_moves)
+        self.display_current_turn()
         pygame.display.update()
 
 
@@ -23,6 +24,16 @@ class Game:
         self.turn = WHITE
         self.valid_moves = {}
 
+    def display_current_turn(self):
+            display_text = f"Turn: {self.get_turn_color()}"
+            font = pygame.font.SysFont('arial', 24)
+            turn_text = font.render(display_text, True, WHITE)
+            text_width, text_height = font.size(display_text)
+            self.win.blit(turn_text, (WIDTH // 2 - text_width, HEIGHT - 30))
+
+
+    def get_turn_color(self):
+        return "White" if self.turn == WHITE else "Black"
 
     def reset(self):
         self._init()

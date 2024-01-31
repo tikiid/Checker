@@ -108,58 +108,22 @@ class Board:
         return moves
 
 
-    def _traverse_left(self, start, stop, step, color, left_col, skipped=[]):
+    def _traverse_left(self, start, stop, step, color, left, skipped=[]):
         moves = {}
         last = []
         for current_row in range(start, stop, step):
-            if left_col < 0:
+            if left < 0:
                 break
             
-            current = self.board[current_row][left_col]
-            # case vide
-            if current == 0:  
+            current = self.board[current_row][left]
+            # 
+            if current == 0: 
                 if skipped and not last:
                     break
                 elif skipped:
-                    moves[(current_row, left_col)] = last + skipped
+                    moves[(current_row, left)] = last + skipped
                 else:
-                    moves[(current_row, left_col)] = last
-                # double ou triple jump
-                if last: 
-                    if step == -1:
-                        row = max(current_row-3, 0)
-                    else:
-                        row = min(current_row + current_row, ROWS)
-
-                    moves.update(self._traverse_left(current_row + step, row, step, color, left_col - 1, skipped=last))
-                    moves.update(self._traverse_right(current_row + step, row, step, color, left_col + 1, skipped=last))
-                break
-            # même couleur
-            elif current.color == color: 
-                break
-            # assuming jumping over
-            else: 
-                last = [current]
-
-                left_col -= 1
-        
-        return moves
-        
-    def _traverse_right(self, start, stop, step, color, right_col, skipped=[]):
-        moves = {}
-        last = []
-        for current_row in range(start, stop, step):
-            if right_col >= COLS:
-                break
-            
-            current = self.board[current_row][right_col]
-            if current == 0:  # empty square
-                if skipped and not last:
-                    break
-                elif skipped:
-                    moves[(current_row, right_col)] = last + skipped
-                else:
-                    moves[(current_row, right_col)] = last
+                    moves[(current_row, left)] = last
 
                 if last: # double or triple jump
                     if step == -1:
@@ -167,8 +131,8 @@ class Board:
                     else:
                         row = min(current_row + current_row, ROWS)
 
-                    moves.update(self._traverse_left(current_row + step, row, step, color, right_col - 1, skipped=last))
-                    moves.update(self._traverse_right(current_row + step, row, step, color, right_col + 1, skipped=last))
+                    moves.update(self._traverse_left(current_row + step, row, step, color, left - 1, skipped=last))
+                    moves.update(self._traverse_right(current_row + step, row, step, color, left + 1, skipped=last))
                 break
 
             elif current.color == color: # same color => no moves
@@ -176,6 +140,42 @@ class Board:
             else: # assuming jumping over
                 last = [current]
 
-                right_col += 1
+                left -= 1
+        
+        return moves
+        
+        
+    def _traverse_right(self, start, stop, step, color, right, skipped=[]):
+        moves = {}
+        last = []
+        for current_row in range(start, stop, step):
+            if right >= COLS:
+                break
+            
+            current = self.board[current_row][right]
+            if current == 0:  # empty square
+                if skipped and not last:
+                    break
+                elif skipped:
+                    moves[(current_row, right)] = last + skipped
+                else:
+                    moves[(current_row, right)] = last
+
+                if last: # double or triple jump
+                    if step == -1:
+                        row = max(current_row-3, 0)
+                    else:
+                        row = min(current_row + current_row, ROWS)
+
+                    moves.update(self._traverse_left(current_row + step, row, step, color, right - 1, skipped=last))
+                    moves.update(self._traverse_right(current_row + step, row, step, color, right + 1, skipped=last))
+                break
+
+            elif current.color == color: # same color => no moves
+                break
+            else: # assuming jumping over
+                last = [current]
+
+                right += 1
         
         return moves    
