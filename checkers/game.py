@@ -1,7 +1,6 @@
 import pygame
-from .constants import BLACK, WHITE, SQUARE_SIZE, HEIGHT, WIDTH
+from .constants import BLACK, WHITE, SQUARE_SIZE, HEIGHT, WIDTH, BLUE
 from .board import Board
-from .indicator import TurnIndicator
 
 
 class Game:
@@ -16,7 +15,6 @@ class Game:
         self.display_current_turn()
         pygame.display.update()
 
-
     # default settings (private)
     def _init(self):
         self.selected = None
@@ -24,13 +22,13 @@ class Game:
         self.turn = WHITE
         self.valid_moves = {}
 
+    # affiche la couleur qui doit jouer
     def display_current_turn(self):
             display_text = f"Turn: {self.get_turn_color()}"
             font = pygame.font.SysFont('arial', 24)
             turn_text = font.render(display_text, True, WHITE)
             text_width, text_height = font.size(display_text)
             self.win.blit(turn_text, (WIDTH // 2 - text_width, HEIGHT - 30))
-
 
     def get_turn_color(self):
         return "White" if self.turn == WHITE else "Black"
@@ -41,12 +39,11 @@ class Game:
     def winner(self):
         return self.board.winner()
 
-
     # sélectionner une pièce 
     def select(self, row, col):
         if self.selected:
             result = self._move(row, col)
-            # reset selection recall 
+            # reset sélection  
             if not result: 
                 self.selected = None
                 self.select(row, col)
@@ -62,9 +59,11 @@ class Game:
     # bouger une piece
     def _move(self, row, col):
         piece = self.board.get_piece(row, col)
+        # check si coup possible au clic de la souris
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
             self.board.move(self.selected, row, col)
             skipped = self.valid_moves[(row, col)]
+            # tuer
             if skipped:
                 self.board.remove(skipped)
             self.change_turn()
@@ -73,7 +72,7 @@ class Game:
         
         return True
 
-    # afficher les mouvements d'une pièce    
+    # afficher les mouvements possibles d'une pièce    
     def draw_valid_moves(self, moves):
         for move in moves:
             row, col = move

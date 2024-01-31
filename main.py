@@ -2,7 +2,6 @@ import pygame
 from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, ROWS, COLS
 from checkers.board import Board
 from checkers.game import Game
-from checkers.indicator import TurnIndicator
 
 FPS = 60 
 
@@ -28,9 +27,6 @@ def main():
 
     while run: 
         clock.tick(FPS)
-
-        if game.winner() != None:
-            print(game.winner())
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # quitter la page

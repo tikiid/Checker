@@ -3,8 +3,6 @@ from .constants import WHITE, BLACK, GREY, GREEN, SQUARE_SIZE, BLACK_PAWN, BLACK
 
 class Piece: 
 
-    PADDING = 40
-
     def __init__(self, row, col, color):
         self.row = row
         self.col = col
@@ -23,18 +21,13 @@ class Piece:
         self.queen = True
 
     def draw_piece(self, win):
-        # radius = SQUARE_SIZE // 2 - self.PADDING
-        # if self.movable:
-        #     pygame.draw.circle(win, GREY, (self.x_pos, self.y_pos), radius + self.OUTLINE + 2)
-        # if self.selected:
-        #     pygame.draw.circle(win, GREY, (self.x_pos, self.y_pos), radius + self.OUTLINE + 10)
-        # pygame.draw.circle(win, GREY, (self.x_pos, self.y_pos), 50)
-        # pygame.draw.circle(win, self.color, (self.x_pos, self.y_pos), radius)
+        # affichage des images pour les dames
         if self.queen:
             if self.color == WHITE: 
                 win.blit(WHITE_QUEEN, (self.x_pos - WHITE_QUEEN.get_width()//2, self.y_pos - WHITE_QUEEN.get_height()//2))
             elif self.color == BLACK: 
                 win.blit(BLACK_QUEEN, (self.x_pos - BLACK_QUEEN.get_width()//2, self.y_pos - BLACK_QUEEN.get_height()//2))
+        # affichage des images pour les pions
         else:
             if self.color == BLACK: 
                  win.blit(BLACK_PAWN, (self.x_pos - BLACK_PAWN.get_width()//2, self.y_pos - BLACK_PAWN.get_height()//2))
@@ -43,7 +36,7 @@ class Piece:
 
     def is_selected(self):
         return self.selected
-
+    
     def move(self, row, col):
         self.row = row
         self.col = col
